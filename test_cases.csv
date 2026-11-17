@@ -1,0 +1,17 @@
+speed_limit,safety_mode,road_condition,traffic_density,slope_angle,outcome
+60,false,clear,20,0,60.0
+60,false,wet,20,0,51.0
+60,false,icy,20,0,36.0
+60,true,clear,20,0,50.0
+60,false,clear,0,0,60.0
+60,false,clear,49,0,60.0
+60,false,clear,50,0,50.0
+60,false,clear,80,0,50.0
+60,false,clear,81,0,40.0
+60,false,clear,100,0,40.0
+60,false,clear,20,-10,70.0
+60,false,clear,20,-1,61.0
+60,false,clear,20,1,59.0
+60,false,clear,20,10,50.0
+100,false,clear,20,0,100.0
+60,true,icy,90,-5,21.0

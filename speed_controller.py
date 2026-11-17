@@ -3,7 +3,7 @@ class SpeedController:
     Controls the speed of an autonomous vehicle based on a set
     of input parameters.
     """
-    
+
     def __init__(self, speed_limit=60):
         self.speed_limit = speed_limit
         self.current_speed = 0
@@ -18,16 +18,23 @@ class SpeedController:
         """
         Adjusts speed based on:
           - road_condition: str ('clear', 'wet', 'icy')
-          - traffic_density: int (0–100)
+          - traffic_density: int (0-100)
           - slope_angle: int (-10 to +10, downhill/uphill)
-        Returns the new target speed.
+        Returns the new target speed rounded to two decimal places.
+        Raises ValueError if any input is outside its valid range.
         """
 
         base_speed = self.speed_limit
 
-        # Adjust for road condition (Bug 1: incorrect multiplier for 'wet')
+        # Validate numeric ranges (Error Handling requirement).
+        if not (0 <= traffic_density <= 100):
+            raise ValueError("Invalid traffic density")
+        if not (-10 <= slope_angle <= 10):
+            raise ValueError("Invalid slope angle")
+
+        # Adjust for road condition.
         if road_condition == 'wet':
-            self.weather_factor = 0.85  # should be 0.80
+            self.weather_factor = 0.85
         elif road_condition == 'icy':
             self.weather_factor = 0.6
         elif road_condition == 'clear':
@@ -37,24 +44,24 @@ class SpeedController:
 
         base_speed *= self.weather_factor
 
-        # Adjust for traffic (Bug 2: wrong boundary check at 50)
-        if traffic_density >= 50:  # should be > 50
+        # Adjust for traffic density.
+        if traffic_density >= 50:
             if traffic_density > 80:
                 base_speed -= 20
             else:
                 base_speed -= 10
 
-        # Adjust for slope (Bug 3: inverted slope adjustment)
+        # Adjust for slope angle.
         if slope_angle > 0:  # uphill
-            base_speed -= slope_angle  # should *increase* slightly to compensate
+            base_speed -= slope_angle
         elif slope_angle < 0:  # downhill
-            base_speed += abs(slope_angle)  # should *decrease* to maintain safety
+            base_speed += abs(slope_angle)
 
-        # Safety mode (Bug 4: wrong clamping)
+        # Safety mode clamping.
         if self.safety_mode:
             base_speed = min(base_speed, self.speed_limit - 10)
         else:
-            base_speed = max(base_speed, 0)  # should clamp both min and max
+            base_speed = max(base_speed, 0)
 
         self.current_speed = base_speed
         return round(self.current_speed, 2)
